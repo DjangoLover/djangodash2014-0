@@ -33,4 +33,9 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
+    install_requires=[
+        'Django >= 1.4',
+        'South == 0.8.2',
+        'djangorestframework == 2.3.8',
+    ]
 )
