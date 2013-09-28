@@ -1,6 +1,9 @@
 # Django settings for djangodash2013 project.
 
-import os
+import os, sys
+
+# Add lib to path
+sys.path.append('../')
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -117,6 +120,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'auth',
     'index',
+    'clients_support',
 )
 
 AUTH_USER_MODEL = 'auth.User'
