@@ -62,9 +62,9 @@ class Ticket(models.Model):
     guest_name = models.CharField(_('Guest name'), max_length=255, blank=True, null=True)
     guest_email = models.CharField(_('Guest email'), max_length=255, blank=True, null=True)
     status = models.CharField(_('Status'), max_length=10, choices=STATUSES)
-    user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS)
+    user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS, blank=True, null=True)
     type = models.ForeignKey(TicketType, verbose_name=_('Ticket type'))
-    importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE)
+    importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE, blank=True, null=True)
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('Manager'), related_name='manager')
     tags = models.ManyToManyField(Tag, verbose_name=_('Tags'), blank=True, null=True)
