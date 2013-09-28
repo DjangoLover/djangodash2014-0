@@ -92,3 +92,15 @@ class Tag(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class StatusLog(models.Model):
+    ticket = models.ForeignKey(Ticket, verbose_name=_('Ticket'))
+    # User who changed status
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('User'))
+    status = models.CharField(_('Status'), max_length=10, choices=Ticket.STATUSES)
+    # Time when the status was changed
+    created_time = models.DateTimeField(_('Time when the status was changed'), auto_now_add=True)
+
+    def __unicode__(self):
+        return str(self.ticket)
