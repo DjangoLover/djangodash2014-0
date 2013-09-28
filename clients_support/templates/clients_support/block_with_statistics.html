@@ -1,1 +1,9 @@
-BLOCK
+{% load i18n %}
+<p class="paginator">
+    {% trans 'Open count' %} <strong>{{ open_count }}</strong> |
+    {% trans 'Closed count' %} <strong>{{ closed_count }}</strong> |
+    {% trans 'Total tickets count' %} <strong>{{ total_count }}</strong>
+    <br>
+    {% trans 'Count of tickets added today' %} <strong>{{ add_today_count }}</strong> |
+    {% trans 'Count of tickets closed today' %} <strong>{{ closed_today_count }}</strong>
+</p>
