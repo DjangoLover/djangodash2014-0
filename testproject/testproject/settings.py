@@ -102,7 +102,7 @@ ROOT_URLCONF = 'testproject.urls'
 WSGI_APPLICATION = 'testproject.wsgi.application'
 
 TEMPLATE_DIRS = (
-    rel('..','templates'),
+    rel('..', 'templates'),
 )
 
 INSTALLED_APPS = (
