@@ -11,7 +11,7 @@ def rel(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name='typograph',
+    name='django-clients-support',
     version=version,
     description='Client support application for django based projects', license='BSD',
     long_description=rel('README.md'),
