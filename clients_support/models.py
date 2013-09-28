@@ -67,9 +67,9 @@ class Ticket(models.Model):
     importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE)
     manager = models.ForeignKey(
         settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('Manager'), related_name='manager')
-    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
+    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'), blank=True, null=True)
     # Used to create a secret link (for guests)
-    secret_code = models.URLField(_('Secret code (for guests)'))
+    secret_code = models.URLField(_('Secret code (for guests)'), blank=True, null=True)
     # Publish a ticket to be seen by other users
     publish = models.BooleanField(_('Publish ticket'))
     # Viewed after close
