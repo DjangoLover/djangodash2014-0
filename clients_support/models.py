@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+
 class Ticket(models.Model):
 
     NEW_STATUS = 'new'
@@ -40,41 +41,54 @@ class Ticket(models.Model):
         (NOT_IMPORTANT, _('Not important'))
     )
 
-    subject = models.CharField(max_length=255)
-    text = models.TextField()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    guest_name = models.CharField(max_length=255, blank=True, null=True)
-    guest_email = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=10, choices=STATUSES)
-    user_mark = models.CharField(max_length=15, choices=MARKS)
-    type = models.ForeignKey(TicketType)
-    importance = models.CharField(max_length=10, choices=IMPORTANCE)
-    manager = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    tags = models.ManyToManyField(Tag)
+    subject = models.CharField(_('Subject'), max_length=255)
+    text = models.TextField(_('Text'))
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('User'))
+    guest_name = models.CharField(_('Guest name'), max_length=255, blank=True, null=True)
+    guest_email = models.CharField(_('Guest email'), max_length=255, blank=True, null=True)
+    status = models.CharField(_('Status'), max_length=10, choices=STATUSES)
+    user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS)
+    type = models.ForeignKey(TicketType, verbose_name=_('Ticket type'))
+    importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE)
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('Manager'))
+    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
     # Used to create a secret link (for guests)
-    secret_code = models.URLField()
+    secret_code = models.URLField(_('Secret code (for guests)'))
     # Publish a ticket to be seen by other users
-    publish = models.BooleanField()
-    viewed = models.BooleanField()
-    created_time = models.DateTimeField(auto_now_add=True)
-    updated_time = models.DateTimeField(auto_now=True)
-    closed_time = models.DateTimeField(blank=True, null=True)
+    publish = models.BooleanField(_('Publish ticket'))
+    # Viewed after close
+    viewed = models.BooleanField(_('Was viewed after close'))
+    created_time = models.DateTimeField(_('Created time'), auto_now_add=True)
+    updated_time = models.DateTimeField(_('Last updated time'), auto_now=True)
+    closed_time = models.DateTimeField(_('Closed time'), blank=True, null=True)
+
+    def __unicode__(self):
+        return self.subject
 
 
 class Message(models.Model):
-    ticket = models.ForeignKey(Ticket)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
+    ticket = models.ForeignKey(Ticket, verbose_name=_('Ticket'))
+    user = models.ForeignKey(_('User'), settings.AUTH_USER_MODEL, blank=True, null=True)
     # Sended from guest
-    from_guest = models.BooleanField()
-    text = models.TextField()
+    from_guest = models.BooleanField(_('Message from guest'))
+    text = models.TextField(_('Text'))
     # If a message is created by the client, then automatically placed in the True, otherwise False.
-    was_read = models.BooleanField()
-    created_time = models.DateTimeField(auto_now_add=True)
+    was_read = models.BooleanField(_('Message was read'))
+    created_time = models.DateTimeField(_('Created time'), auto_now_add=True)
+
+    def __unicode__(self):
+        return str(self.ticket)
 
 
 class TicketType(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(_('Name'), max_length=255)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(_('Name'), max_length=255)
+    
+    def __unicode__(self):
+        return self.name
