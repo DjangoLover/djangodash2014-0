@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static admin_list %}
 {% load admin_urls %}
+{% load block_with_statistics %}
 
 {% block extrastyle %}
   {{ block.super }}
@@ -69,6 +70,7 @@
         {{ cl.formset.non_form_errors }}
     {% endif %}
     <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
+      <p class="paginator">{% block_with_statistics %}</p>
       {% block search %}{% search_form cl %}{% endblock %}
       {% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}
 
