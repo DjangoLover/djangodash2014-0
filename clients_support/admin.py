@@ -24,7 +24,8 @@ class TicketAdmin(admin.ModelAdmin):
     list_display = ('subject', 'user', 'manager', 'status', 'type', 'importance', 'updated_time')
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')
-    actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low']
+    actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low',
+               'change_status_to_read', 'change_status_to_solved']
     change_list_template = 'change_list.html'
 
     def make_published(modeladmin, request, queryset):
@@ -42,6 +43,14 @@ class TicketAdmin(admin.ModelAdmin):
     def change_importance_to_low(modeladmin, request, queryset):
         queryset.update(importance=Ticket.NOT_IMPORTANT)
     change_importance_to_low.short_description = _("Change the importance of the selected tickets on a low")
+
+    def change_status_to_read(modeladmin, request, queryset):
+        queryset.update(status=Ticket.READ_STATUS)
+    change_status_to_read.short_description = _("Change the status of the selected tickets as read")
+
+    def change_status_to_solved(modeladmin, request, queryset):
+        queryset.update(status=Ticket.SOLVED_STATUS)
+    change_status_to_solved.short_description = _("Change the status of the selected tickets as solved")
 
 
 admin.site.register(Ticket, TicketAdmin)
