@@ -108,7 +108,10 @@ TEMPLATE_DIRS = (
     rel('..', 'templates'),
 )
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 INSTALLED_APPS = (
+    # Contrib
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -116,8 +119,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+
+    # Vendors
     'south',
-    # 'django.contrib.admindocs',
+    'django_nose',
+    
+    # Custom
     'auth',
     'index',
     'clients_support',
