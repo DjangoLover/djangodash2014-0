@@ -23,4 +23,24 @@ _Futures_:
 -  Easy customization
 
 ## Installation
-WIP
+
+`pip install -e git+git@github.com:WB-Tecnologies/djangodash2013.git#egg=clients_support`
+
+Add `clients_support` to `INSTALLED_APPS`.
+
+Include following templates in your layout:
+
+-  `clients_support/head.html` - to HEAD section.
+-  `clients_support/body.html` - to end of BODY section.
+
+Add following to your `urls.py`:
+
+```python
+from clients_support.urls import clients_support_urls
+
+urlpatterns = patterns('',
+    ...
+)
+
+urlpatterns += clients_support_urls()
+```

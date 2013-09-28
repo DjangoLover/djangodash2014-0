@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     # Vendors
     'south',
     'django_nose',
+    'rest_framework',
     
     # Custom
     'auth',

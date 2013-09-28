@@ -6,6 +6,9 @@ from index.views import IndexView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.contrib import admin
+
+from clients_support.urls import clients_support_urls
+
 admin.autodiscover()
 
 urlpatterns = patterns(
@@ -16,3 +19,6 @@ urlpatterns = patterns(
 )
 
 urlpatterns += staticfiles_urlpatterns()
+
+# Add django-clients-support urls
+urlpatterns += clients_support_urls()
