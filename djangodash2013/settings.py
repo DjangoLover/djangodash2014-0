@@ -127,8 +127,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     # 'django.contrib.admindocs',
+    'auth',
     'index',
 )
+
+AUTH_USER_MODEL = 'auth.User'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
