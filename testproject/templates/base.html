@@ -6,69 +6,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="{{ STATIC_URL }}ico/favicon.png">
-
-    <title>Off Canvas Template for Bootstrap</title>
-
-    <!-- Bootstrap core CSS -->
+    <title>DjangoDash 2013. WB-Tech. Demo page.</title>
     <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/index.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <style type="text/css">
-    /*
-     * Style twaks
-     * --------------------------------------------------
-     */
-    body {
-        padding-top: 70px;
-    }
+    <!-- django-users-support requirements -->
+    {% include 'clients_support/head.html' %}
 
-    footer {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    /*
-     * Off Canvas
-     * --------------------------------------------------
-     */
-    @media screen and (max-width: 768px) {
-        .row-offcanvas {
-            position: relative;
-            -webkit-transition: all 0.25s ease-out;
-            -moz-transition: all 0.25s ease-out;
-            transition: all 0.25s ease-out;
-        }
-
-        .row-offcanvas-right
-      .sidebar-offcanvas {
-            right: -50%;
-     /* 6 columns */
-        }
-
-        .row-offcanvas-left
-      .sidebar-offcanvas {
-            left: -50%;
-     /* 6 columns */
-        }
-
-        .row-offcanvas-right.active {
-            right: 50%;
-     /* 6 columns */
-        }
-
-        .row-offcanvas-left.active {
-            left: 50%;
-     /* 6 columns */
-        }
-
-        .sidebar-offcanvas {
-            position: absolute;
-            top: 0;
-            width: 50%;
-     /* 6 columns */
-        }
-    } 
-    </style>
   </head>
 
   <body>
@@ -107,5 +51,8 @@
         });
     }); 
     </script>
+
+    {% include 'clients_support/body.html' %}
+
   </body>
 </html>
