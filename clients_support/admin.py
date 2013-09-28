@@ -22,7 +22,7 @@ class AssignManagerFilter(admin.SimpleListFilter):
 
 def make_published(modeladmin, request, queryset):
     queryset.update(publish=True)
-make_published.short_description = "Mark selected tickets as published"
+make_published.short_description = _("Mark selected tickets as published")
 
 
 class TicketAdmin(admin.ModelAdmin):
@@ -30,6 +30,7 @@ class TicketAdmin(admin.ModelAdmin):
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')
     actions = (make_published, )
+    change_list_template = 'change_list.html'
 
 
 admin.site.register(Ticket, TicketAdmin)
