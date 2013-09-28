@@ -26,7 +26,7 @@ class TicketAdmin(admin.ModelAdmin):
     search_fields = ('subject', 'text')
     actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low',
                'change_status_to_read', 'change_status_to_solved']
-    change_list_template = 'change_list.html'
+    change_list_template = 'clients_support/change_list.html'
 
     def make_published(modeladmin, request, queryset):
         queryset.update(publish=True)
