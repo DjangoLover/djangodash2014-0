@@ -68,7 +68,7 @@ class Ticket(models.Model):
 
 class Message(models.Model):
     ticket = models.ForeignKey(Ticket, verbose_name=_('Ticket'))
-    user = models.ForeignKey(_('User'), settings.AUTH_USER_MODEL, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('User'))
     # Sended from guest
     from_guest = models.BooleanField(_('Message from guest'))
     text = models.TextField(_('Text'))
@@ -89,6 +89,6 @@ class TicketType(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(_('Name'), max_length=255)
-    
+
     def __unicode__(self):
         return self.name
