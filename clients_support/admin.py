@@ -28,6 +28,9 @@ class TicketAdmin(admin.ModelAdmin):
                'change_status_to_read', 'change_status_to_solved']
     change_list_template = 'clients_support/change_list.html'
 
+    def has_add_permission(self, request):
+        return False
+
     def make_published(modeladmin, request, queryset):
         queryset.update(publish=True)
     make_published.short_description = _("Mark selected tickets as published")

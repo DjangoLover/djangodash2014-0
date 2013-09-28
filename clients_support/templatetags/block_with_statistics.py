@@ -12,7 +12,7 @@ def block_with_statistics():
 
     today = datetime.combine(today, time())
     tomorrow = datetime.combine(tomorrow, time())
-    
+
     return {
         'closed_count': Ticket.objects.filter(status=Ticket.CLOSED_STATUS).count(),
         'open_count': Ticket.objects.exclude(status=Ticket.CLOSED_STATUS).exclude(status=Ticket.SOLVED_STATUS).count(),
