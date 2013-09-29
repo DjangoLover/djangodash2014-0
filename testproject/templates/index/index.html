@@ -7,7 +7,9 @@
     <h1>Demo project</h1>
     <p>This is a demo project page by WB-Tech team for DjangoDash 2013.</p>
   </div>
+
 </div>
+
 
 <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
   <div class="well sidebar-nav">
@@ -19,6 +21,25 @@
     </ul>
   </div>
 </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-6">
+    <h2>Sign up</h2>
+    <form method="POST" action="/" role="form">
+      {% include '_form.html' with form=reg_form %}
+      <input type="hidden" name="action" value="sign-up">
+      <p><button class="btn btn-primary">Register</button></p>
+    </form>
+  </div>
+  <div class="col-xs-6">
+    <h2>Sign in</h2>
+    <form method="POST" action="/" role="form">
+      {% include '_form.html' with form=auth_form %}
+      <input type="hidden" name="action" value="sign-in">
+      <p><button class="btn btn-primary">Log in</button></p>
+    </form>
+  </div>
 </div>
 
 <hr>
