@@ -27,6 +27,7 @@ class TicketAdmin(admin.ModelAdmin):
     actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low',
                'change_status_to_read', 'change_status_to_solved']
     change_list_template = 'clients_support/admin/change_list.html'
+    readonly_fields = ('created_time',)
 
     def has_add_permission(self, request):
         return False
