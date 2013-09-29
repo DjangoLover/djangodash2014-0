@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -61,7 +62,7 @@ class Ticket(models.Model):
         settings.AUTH_USER_MODEL, blank=True, null=True, verbose_name=_('User'), related_name='user')
     guest_name = models.CharField(_('Guest name'), max_length=255, blank=True, null=True)
     guest_email = models.CharField(_('Guest email'), max_length=255, blank=True, null=True)
-    status = models.CharField(_('Status'), max_length=10, choices=STATUSES)
+    status = models.CharField(_('Status'), max_length=10, choices=STATUSES, default=NEW_STATUS)
     user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS, blank=True, null=True)
     type = models.ForeignKey(TicketType, verbose_name=_('Ticket type'))
     importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE, blank=True, null=True)
@@ -79,7 +80,31 @@ class Ticket(models.Model):
     closed_time = models.DateTimeField(_('Closed time'), blank=True, null=True)
 
     def __unicode__(self):
-        return self.subject
+        return u'#%d. %s' % (self.pk, self.subject)
+
+    @property
+    def is_closed(self):
+        return self.status == self.CLOSED_STATUS
+
+    def save(self, *args, **kwargs):
+        field = 'status'
+        changed = False
+
+        # otherwise check if status field have changed
+        if self.is_closed:
+            changed = self.id is None
+            if not changed:
+                old_value = getattr(self.__class__._default_manager.get(id=self.id), field)
+                new_value = getattr(self, field)
+                if new_value != old_value:
+                    changed = True
+
+        if changed:
+            self.closed_time = datetime.now()
+
+        super(Ticket, self).save(*args, **kwargs)
+
+
 
 
 class Message(models.Model):
@@ -103,6 +128,14 @@ class StatusLog(models.Model):
     status = models.CharField(_('Status'), max_length=10, choices=Ticket.STATUSES)
     # Time when the status was changed
     created_time = models.DateTimeField(_('Time when the status was changed'), auto_now_add=True)
+
+    @staticmethod
+    def add_log(ticket, user, status):
+        status_log = StatusLog()
+        status_log.ticket = ticket
+        status_log.user = user
+        status_log.status = status
+        status_log.save()
 
     def __unicode__(self):
         return str(self.ticket)
