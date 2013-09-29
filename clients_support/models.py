@@ -131,7 +131,7 @@ class Ticket(models.Model):
 
         # otherwise check if status field have changed
         if self.is_closed:
-            changed = self.id is None
+            changed = self.pk is None
             if not changed:
                 old_value = getattr(self.__class__._default_manager.get(id=self.id), field)
                 new_value = getattr(self, field)

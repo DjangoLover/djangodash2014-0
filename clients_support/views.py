@@ -4,6 +4,7 @@ from clients_support.models import Ticket, Message, StatusLog, TicketType, Tag
 from rest_framework.authentication import SessionAuthentication
 from rest_framework import viewsets, permissions
 from django.db.models import Q
+from clients_support.serializers import TicketSerializer, MessageSerializer
 
 
 class UnsafeSessionAuthentication(SessionAuthentication):
@@ -33,6 +34,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     model = Ticket
     permission_classes = (TicketPermissions, )
     authentication_classes = (UnsafeSessionAuthentication,)
+    model_serializer_class = TicketSerializer
 
     @property
     def queryset(self):
@@ -63,6 +65,7 @@ class MessagePermissions(permissions.BasePermission):
 class MessageViewSet(viewsets.ModelViewSet):
     model = Message
     authentication_classes = (UnsafeSessionAuthentication,)
+    model_serializer_class = MessageSerializer
 
     @property
     def queryset(self):
