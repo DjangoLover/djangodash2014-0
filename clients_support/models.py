@@ -129,5 +129,16 @@ class StatusLog(models.Model):
     # Time when the status was changed
     created_time = models.DateTimeField(_('Time when the status was changed'), auto_now_add=True)
 
+    @staticmethod
+    def add_log(ticket, user, status):
+        try:
+            status_log = StatusLog.objects.get(ticket=ticket)
+        except StatusLog.DoesNotExist:
+            status_log = StatusLog()
+            status_log.ticket = ticket
+        status_log.user = user
+        status_log.status = status
+        status_log.save()
+
     def __unicode__(self):
         return str(self.ticket)
