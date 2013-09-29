@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.translation import ugettext as _
 from clients_support.conf import settings
 
@@ -55,26 +55,35 @@ class TicketAdmin(admin.ModelAdmin):
             StatusLog.add_log(obj, request.user, obj.status)
 
     def make_published(self, request, queryset):
-        queryset.update(publish=True)
+        count = queryset.exclude(publish=True).update(publish=True)
+        messages.success(request, _("Published %(count)d tickets.") % dict(count=count))
     make_published.short_description = _("Mark selected tickets as published")
 
+    def _change_importance(self, request, queryset, value):
+        count = queryset.exclude(importance=value).update(importance=value)
+        messages.success(request, _("Importance `%(value)s` put %(count)d tickets.") % dict(value=value, count=count))
+
     def change_importance_to_high(self, request, queryset):
-        queryset.update(importance=Ticket.HIGH_IMPORTANT)
+        self._change_importance(request, queryset, Ticket.HIGH_IMPORTANT)
     change_importance_to_high.short_description = _("Change the importance of the selected tickets on a high")
 
     def change_importance_to_normal(self, request, queryset):
-        queryset.update(importance=Ticket.NORMAL_IMPORTANT)
+        self._change_importance(request, queryset, Ticket.NORMAL_IMPORTANT)
     change_importance_to_normal.short_description = _("Change the importance of the selected tickets on a normal")
 
     def change_importance_to_low(self, request, queryset):
-        queryset.update(importance=Ticket.NOT_IMPORTANT)
+        self._change_importance(request, queryset, Ticket.NOT_IMPORTANT)
     change_importance_to_low.short_description = _("Change the importance of the selected tickets on a low")
 
     def change_status_to_read(self, request, queryset):
         for ticket in queryset:
             if ticket.status == Ticket.NEW_STATUS:
                 StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
-        queryset.filter(status=Ticket.NEW_STATUS).update(status=Ticket.READ_STATUS)
+        count = queryset.filter(status=Ticket.NEW_STATUS).update(status=Ticket.READ_STATUS)
+        if count:
+            messages.success(request, _("Status `read` put %(count)d tickets.") % dict(count=count))
+        else:
+            messages.error(request, _("Status `read` can be supplied only by a new tickets."))
 
     change_status_to_read.short_description = _("Change the status of the selected tickets as read")
 
@@ -83,8 +92,15 @@ class TicketAdmin(admin.ModelAdmin):
         for ticket in queryset:
             if not ticket.status in deny_statuses:
                 StatusLog.add_log(ticket, request.user, ticket.CLOSED_STATUS)
-        queryset.exclude(status__in=deny_statuses).\
+        count = queryset.exclude(status__in=deny_statuses).\
             update(status=Ticket.CLOSED_STATUS, closed_time=datetime.now())
+        if count:
+            messages.success(request, _("Status `closed` put %(count)d tickets.") % dict(count=count))
+        else:
+            messages.error(request, _("Status `closed` can not be put tickets by status "
+                                      "%(statuses)s.") % dict(statuses=', '.join(deny_statuses)))
+
+
 
     change_status_to_closed.short_description = _("Change the status of the selected tickets as closed")
 
