@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from datetime import datetime, time, timedelta
 from django import template
 
@@ -5,7 +7,8 @@ from clients_support.models import Ticket
 
 register = template.Library()
 
-@register.inclusion_tag('clients_support/block_with_statistics.html')
+
+@register.inclusion_tag('clients_support/admin/block_with_statistics.html')
 def block_with_statistics():
     today = datetime.now().date()
     tomorrow = today + timedelta(1)
