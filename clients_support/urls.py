@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 from django.conf.urls import url, include
 from rest_framework import viewsets, routers
 from clients_support.models import Ticket, Message, StatusLog, TicketType, Tag
+
 
 class TicketViewSet(viewsets.ModelViewSet):
     model = Ticket
