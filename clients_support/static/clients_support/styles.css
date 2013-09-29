@@ -36,7 +36,6 @@
 /* Tickets list */
 .dcs-tickets {margin:.5em 0;}
 .dcs-tickets_item {margin:.5em 0;padding:0 8px;line-height:30px;background-color:#7DCFFE;background-color:rgba(125,207,254,0.5);-webkit-box-shadow:inset 0 2px 1px rgba(0,0,0,0.1);cursor:pointer;}
-.dcs-tickets_item__active + .dcs-tickets_description {display:block;}
 .dcs-tickets_description {display:none;margin:.5em 0 1em;padding:0;}
 .dcs-tickets_title {display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 .dcs-tickets_author {float:right;color:#007CD0;max-width:22%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}

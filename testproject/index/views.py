@@ -8,6 +8,10 @@ from django.contrib.auth import login, authenticate
 
 
 def index(request):
+    """
+    Demo page index view.
+    Process sign in and sign up forms.
+    """
     auth_form = reg_form = None
     if request.method == 'POST':
         action = request.POST.get('action', '')
