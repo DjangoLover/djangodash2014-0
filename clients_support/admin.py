@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 
-from clients_support.models import Ticket, TicketType, Tag
+from clients_support.models import Ticket, TicketType, StatusLog
 
 
 class AssignManagerFilter(admin.SimpleListFilter):
@@ -32,6 +33,11 @@ class TicketAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
+    def save_model(self, request, obj, form, change):
+        obj.save()
+        if 'status' in form.changed_data:
+            StatusLog.add_log(obj, request.user, obj.status)
+
     def make_published(self, request, queryset):
         queryset.update(publish=True)
     make_published.short_description = _("Mark selected tickets as published")
@@ -49,13 +55,30 @@ class TicketAdmin(admin.ModelAdmin):
     change_importance_to_low.short_description = _("Change the importance of the selected tickets on a low")
 
     def change_status_to_read(self, request, queryset):
+        for ticket in queryset:
+            if ticket.status != ticket.READ_STATUS:
+                StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
         queryset.update(status=Ticket.READ_STATUS)
     change_status_to_read.short_description = _("Change the status of the selected tickets as read")
 
     def change_status_to_solved(self, request, queryset):
+        for ticket in queryset:
+            if ticket.status != ticket.SOLVED_STATUS:
+                StatusLog.add_log(ticket, request.user, ticket.SOLVED_STATUS)
         queryset.update(status=Ticket.SOLVED_STATUS)
     change_status_to_solved.short_description = _("Change the status of the selected tickets as solved")
 
 
+class StatusLogAdmin(admin.ModelAdmin):
+    list_display = ('ticket', 'user', 'status', 'created_time')
+    list_filter = ('ticket', 'user', 'status', 'created_time')
+    readonly_fields = ('ticket', 'user', 'status')
+    ordering = ('-created_time',)
+
+    def has_add_permission(self, request):
+        return False
+
+
 admin.site.register(Ticket, TicketAdmin)
+admin.site.register(StatusLog, StatusLogAdmin)
 admin.site.register(TicketType)
