@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext as _
@@ -41,7 +42,7 @@ class TicketAdmin(admin.ModelAdmin):
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')
     actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low',
-               'change_status_to_read', 'change_status_to_solved']
+               'change_status_to_read', 'change_status_to_closed']
     change_list_template = 'clients_support/admin/change_list.html'
     readonly_fields = ('created_time', 'closed_time')
 
@@ -70,18 +71,20 @@ class TicketAdmin(admin.ModelAdmin):
     change_importance_to_low.short_description = _("Change the importance of the selected tickets on a low")
 
     def change_status_to_read(self, request, queryset):
-        for ticket in queryset:
-            if ticket.status != ticket.READ_STATUS:
-                StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
-        queryset.update(status=Ticket.READ_STATUS)
+        if queryset.update(status=Ticket.READ_STATUS):
+            for ticket in queryset:
+                if ticket.status != ticket.READ_STATUS:
+                    StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
     change_status_to_read.short_description = _("Change the status of the selected tickets as read")
 
-    def change_status_to_solved(self, request, queryset):
-        for ticket in queryset:
-            if ticket.status != ticket.SOLVED_STATUS:
-                StatusLog.add_log(ticket, request.user, ticket.SOLVED_STATUS)
-        queryset.update(status=Ticket.SOLVED_STATUS)
-    change_status_to_solved.short_description = _("Change the status of the selected tickets as solved")
+    def change_status_to_closed(self, request, queryset):
+        allow_closed_statuses = [Ticket.CLOSED_STATUS, Ticket.SOLVED_STATUS, Ticket.REOPENED_STATUS]
+        if queryset.exclude(status__in=allow_closed_statuses).update(
+                status=Ticket.CLOSED_STATUS, closed_time=datetime.now()):
+            for ticket in queryset:
+                if not ticket.status in allow_closed_statuses:
+                    StatusLog.add_log(ticket, request.user, ticket.CLOSED_STATUS)
+    change_status_to_closed.short_description = _("Change the status of the selected tickets as closed")
 
 
 class StatusLogAdmin(admin.ModelAdmin):
