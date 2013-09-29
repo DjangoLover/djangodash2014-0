@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.conf import settings
 from django.utils.translation import ugettext as _
+from clients_support.conf import settings
 
 
 class TicketType(models.Model):
@@ -115,6 +116,15 @@ class Ticket(models.Model):
 
     def get_status_choices_unless(self, excluded_list):
         return self.get_status_choices_specific([s[0] for s in self.STATUSES if not s[0] in excluded_list])
+
+    def get_other_tickets(self):
+        if settings.ADMIN_SHOW_USER_HISTORY_TICKETS and self.user:
+            return Ticket.objects.filter(user=self.user).exclude(pk=self.pk).order_by('-created_time')
+        return []
+
+    @property
+    def admin_publish_icon(self):
+        return _boolean_icon(self.publish)
 
     def save(self, *args, **kwargs):
         field = 'status'

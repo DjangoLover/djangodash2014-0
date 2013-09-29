@@ -1,6 +1,26 @@
-{% extends 'admin/change_form.html' %}
+{% extends 'admin/change_form.html' %}{% load i18n %}
 
 {% block extrahead %}
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
     {% include 'autocomplete_light/static.html' %}
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+{% block ticket_history %}
+    <div id="clients_support_history">
+        {% for ticket in original.get_other_tickets %}
+         {% if forloop.first %}<h3>{% trans 'History tickets by' %} {{ original.user.get_full_name|default:original.user.username }}</h3>{% endif %}
+            <div id="ticket_{{ ticket.pk }}">
+                <span class="ticket_icon">{{ ticket.admin_publish_icon }}</span> <span class="ticket_date">{{ ticket.created_time }}</span> |
+                <span style="font-weight: bold" class="ticket_subject">{{ ticket.subject }}</span> |
+                <span style="font-style: italic" class="ticket_status">{{ ticket.get_status_display }}</span>
+            <div class="ticket_body">{{ ticket.text|striptags|safe }}</div>
+            <br style="padding: 10px;">
+            <hr>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
 {% endblock %}
