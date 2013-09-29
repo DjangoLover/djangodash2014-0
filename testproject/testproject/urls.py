@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import autocomplete_light
 
 from django.conf import settings
 from django.conf.urls import patterns, include, url
@@ -8,7 +9,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from clients_support.urls import clients_support_urls
-
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 urlpatterns = patterns(

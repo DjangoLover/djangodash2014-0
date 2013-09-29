@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
+from django.contrib.admin.templatetags.admin_list import _boolean_icon
+from django.core.urlresolvers import reverse
 from django.db import models
-from django.conf import settings
 from django.utils.translation import ugettext as _
+from clients_support.conf import settings
 
 
 class TicketType(models.Model):
@@ -17,6 +20,13 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_update_url(self):
+        url = 'admin:default_template_autocomplete_templatedchoice_change'
+        return reverse(url, args=(self.pk,))
+
+    def get_absolute_url(self):
+        return reverse('templated_choice_detail', args=(self.pk,))
+
 
 class Ticket(models.Model):
 
@@ -31,8 +41,8 @@ class Ticket(models.Model):
         (NEW_STATUS, _('New ticket')),
         (READ_STATUS, _('Ticket was read')),
         (ASSIGNED_STATUS, _('Ticket was assigned')),
-        (SOLVED_STATUS, _('Ticket was solved')),
         (CLOSED_STATUS, _('Ticket was closed')),
+        (SOLVED_STATUS, _('Ticket was solved')),
         (REOPENED_STATUS, _('Ticket was reopened'))
     )
 
@@ -63,7 +73,7 @@ class Ticket(models.Model):
     guest_name = models.CharField(_('Guest name'), max_length=255, blank=True, null=True)
     guest_email = models.CharField(_('Guest email'), max_length=255, blank=True, null=True)
     status = models.CharField(_('Status'), max_length=10, choices=STATUSES, default=NEW_STATUS)
-    user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS, blank=True, null=True)
+    user_mark = models.CharField(_('User mark'), max_length=15, choices=MARKS, default=NOT_RATED_MARK)
     type = models.ForeignKey(TicketType, verbose_name=_('Ticket type'))
     importance = models.CharField(_('Importance'), max_length=10, choices=IMPORTANCE, blank=True, null=True)
     manager = models.ForeignKey(
@@ -79,6 +89,7 @@ class Ticket(models.Model):
     updated_time = models.DateTimeField(_('Last updated time'), auto_now=True)
     closed_time = models.DateTimeField(_('Closed time'), blank=True, null=True)
 
+
     def __unicode__(self):
         return u'#%d. %s' % (self.pk, self.subject)
 
@@ -86,9 +97,37 @@ class Ticket(models.Model):
     def is_closed(self):
         return self.status == self.CLOSED_STATUS
 
+    @property
+    def is_solved(self):
+        return self.status == self.SOLVED_STATUS
+
+    @property
+    def is_reopened(self):
+        return self.status == self.REOPENED_STATUS
+
+    def get_status_choices_specific(self, included_list):
+        choices = tuple()
+        if self.pk and not self.status in included_list:
+            included_list.append(self.status)
+        for status in self.STATUSES:
+            if status[0] in included_list:
+                choices += (status,)
+        return choices
+
+    def get_status_choices_unless(self, excluded_list):
+        return self.get_status_choices_specific([s[0] for s in self.STATUSES if not s[0] in excluded_list])
+
+    def get_other_tickets(self):
+        if settings.ADMIN_SHOW_USER_HISTORY_TICKETS and self.user:
+            return Ticket.objects.filter(user=self.user).exclude(pk=self.pk).order_by('-created_time')
+        return []
+
+    @property
+    def admin_publish_icon(self):
+        return _boolean_icon(self.publish)
+
     def save(self, *args, **kwargs):
         field = 'status'
-        changed = False
 
         # otherwise check if status field have changed
         if self.is_closed:
@@ -98,13 +137,12 @@ class Ticket(models.Model):
                 new_value = getattr(self, field)
                 if new_value != old_value:
                     changed = True
-
-        if changed:
-            self.closed_time = datetime.now()
+            if changed:
+                self.closed_time = datetime.now()
+        if self.is_reopened:
+            self.closed_time = None
 
         super(Ticket, self).save(*args, **kwargs)
-
-
 
 
 class Message(models.Model):

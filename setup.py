@@ -35,7 +35,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django >= 1.4',
-        'South == 0.8.2',
-        'djangorestframework == 2.3.8',
+        'South >= 0.8.2',
+        'djangorestframework >= 2.3.8',
+        'django-autocomplete-light >= 1.4.3',
     ]
 )

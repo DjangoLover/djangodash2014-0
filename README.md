@@ -26,7 +26,9 @@ _Futures_:
 
 `pip install -e git+git@github.com:WB-Tecnologies/djangodash2013.git#egg=clients_support`
 
-Add `clients_support` to `INSTALLED_APPS`.
+Add `clients_support` and `autocomplete_light` to `INSTALLED_APPS`.
+
+In urls.py, call autocomplete_light.autodiscover() before admin.autodiscover().
 
 Include following templates in your layout:
 
