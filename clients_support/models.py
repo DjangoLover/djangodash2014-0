@@ -32,8 +32,8 @@ class Ticket(models.Model):
         (NEW_STATUS, _('New ticket')),
         (READ_STATUS, _('Ticket was read')),
         (ASSIGNED_STATUS, _('Ticket was assigned')),
-        (SOLVED_STATUS, _('Ticket was solved')),
         (CLOSED_STATUS, _('Ticket was closed')),
+        (SOLVED_STATUS, _('Ticket was solved')),
         (REOPENED_STATUS, _('Ticket was reopened'))
     )
 
@@ -87,9 +87,28 @@ class Ticket(models.Model):
     def is_closed(self):
         return self.status == self.CLOSED_STATUS
 
+    @property
+    def is_solved(self):
+        return self.status == self.SOLVED_STATUS
+
+    @property
+    def is_reopened(self):
+        return self.status == self.REOPENED_STATUS
+
+    def get_status_choices_specific(self, included_list):
+        choices = tuple()
+        if self.pk and not self.status in included_list:
+            included_list.append(self.status)
+        for status in self.STATUSES:
+            if status[0] in included_list:
+                choices += (status,)
+        return choices
+
+    def get_status_choices_unless(self, excluded_list):
+        return self.get_status_choices_specific([s[0] for s in self.STATUSES if not s[0] in excluded_list])
+
     def save(self, *args, **kwargs):
         field = 'status'
-        changed = False
 
         # otherwise check if status field have changed
         if self.is_closed:
@@ -99,13 +118,12 @@ class Ticket(models.Model):
                 new_value = getattr(self, field)
                 if new_value != old_value:
                     changed = True
-
-        if changed:
-            self.closed_time = datetime.now()
+            if changed:
+                self.closed_time = datetime.now()
+        if self.is_reopened:
+            self.closed_time = None
 
         super(Ticket, self).save(*args, **kwargs)
-
-
 
 
 class Message(models.Model):

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext as _
+from clients_support.conf import settings
 
 from clients_support.models import Ticket, TicketType, StatusLog
 
@@ -21,7 +23,20 @@ class AssignManagerFilter(admin.SimpleListFilter):
         return queryset
 
 
+class TicketForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+
+        if self.instance.pk:
+            self.fields['status'].choices = \
+                self.instance.get_status_choices_specific([Ticket.REOPENED_STATUS]) if self.instance.is_solved else \
+                self.instance.get_status_choices_unless([Ticket.SOLVED_STATUS, Ticket.REOPENED_STATUS])
+
+
 class TicketAdmin(admin.ModelAdmin):
+
+    form = TicketForm
+
     list_display = ('subject', 'user', 'manager', 'status', 'type', 'importance', 'updated_time')
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')
@@ -31,7 +46,7 @@ class TicketAdmin(admin.ModelAdmin):
     readonly_fields = ('created_time', 'closed_time')
 
     def has_add_permission(self, request):
-        return False
+        return settings.ADMIN_PERMISSION_ADD_TICKET
 
     def save_model(self, request, obj, form, change):
         obj.save()

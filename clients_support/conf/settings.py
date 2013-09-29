@@ -6,3 +6,4 @@ from django.utils.translation import ugettext as _
 
 
 ADMIN_SHOW_BLOCK_STATISTICS = getattr(django_settings, 'SUPPORT_ADMIN_SHOW_STATISTICS', True)
+ADMIN_PERMISSION_ADD_TICKET = getattr(django_settings, 'SUPPORT_ADMIN_PERMISSION_ADD_TICKET', False)
