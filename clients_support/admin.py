@@ -40,7 +40,6 @@ class TicketAdmin(admin.ModelAdmin):
     # form = TicketForm
     form = autocomplete_light.modelform_factory(Ticket, form=TicketForm)
 
-
     list_display = ('subject', 'user', 'manager', 'status', 'type', 'importance', 'updated_time')
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')

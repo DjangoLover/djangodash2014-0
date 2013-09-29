@@ -15,7 +15,6 @@ def index(request):
     auth_form = reg_form = None
     if request.method == 'POST':
         action = request.POST.get('action', '')
-        print action
         if action == 'sign-in':
             auth_form = AuthenticationForm(data=request.POST)
             if auth_form.is_valid():
@@ -24,12 +23,12 @@ def index(request):
             reg_form = UserCreationForm(data=request.POST)
             if reg_form.is_valid():
                 user = reg_form.save()
-                user = authenticate(username=reg_form.cleaned_data['username'], 
-                             password=reg_form.cleaned_data['password1'])
+                user = authenticate(
+                    username=reg_form.cleaned_data['username'],
+                    password=reg_form.cleaned_data['password1']
+                )
                 login(request, user)
 
-    context = {}
-    context['auth_form'] = auth_form or AuthenticationForm()
-    context['reg_form'] = reg_form or UserCreationForm()
-    return render_to_response('index/index.html', context, 
+    context = dict(auth_form=auth_form or AuthenticationForm(), reg_form=reg_form or UserCreationForm())
+    return render_to_response('index/index.html', context,
                                 context_instance=RequestContext(request))

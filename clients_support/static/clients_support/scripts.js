@@ -35,6 +35,15 @@ function render_message(message) {
     return html;
 }
 
+function show_field_error($form, data){
+    if (data.status==400){
+        var errors = data.responseJSON;
+        for (var key in errors){
+            $form.find('.field-error[data-name='+key+']').removeClass('hide').text(errors[key][0]);
+        }
+    }
+}
+
 $(function(){
     var add_message_form = $('#add-message-form').text();
 
@@ -50,8 +59,7 @@ $(function(){
             }
             /* Your tickets */
             $.getJSON('/clients_support/tickets/', {'current_user': 'true'}, function(data) {
-                console.log(data);
-                html = '';
+                var html = '';
                 for (var index in data) {
                     html += render_my_ticket(data[index], add_message_form);
                 }
@@ -62,8 +70,7 @@ $(function(){
 
             /* Other tickets */
             $.getJSON('/clients_support/tickets/', {'current_user': 'false'}, function(data) {
-                console.log(data);
-                html = '';
+                var html = '';
                 for (var index in data) {
                     html += render_ticket(data[index]);
                 }
@@ -91,7 +98,7 @@ $(function(){
         $(this).next().toggle();
         var $this = $(this).next();
         if (!$this.is(':visible') || $this.attr('data-loaded'))
-            return false
+            return false;
         var id = $(this).attr('data-id');
         $.getJSON('/clients_support/messages/', {'ticket': id}, function(data) {
             var html = '';
@@ -119,6 +126,7 @@ $(function(){
             'ticket': id,
             'text': $(this).find('textarea[name="text"]').val()
         };
+        var $form=$(this);
         $.ajax({
             'url': '/clients_support/messages/',
             'method': 'POST',
@@ -128,7 +136,9 @@ $(function(){
                 $('.tickets').hide();
                 $('.messages').show();
             }
-        });
+        }).fail(function(data){
+                show_field_error($form, data);
+            });
         return false;
     });
 
@@ -150,12 +160,14 @@ $(function(){
     $('#addticket-form').submit(function() {
         var type = $('#addticket-topic').val(),
             title = $('#addticket-title').val(),
-            description = $('#addticket-description').val();
+            description = $('#addticket-description').val(),
+            $form=$(this);
         var data = {
             'type': type,
             'subject': title,
             'text': description
         };
+        $form.find('.field-error').addClass('hide');
         $.ajax({
             'url': '/clients_support/tickets/',
             'method': 'POST',
@@ -167,7 +179,9 @@ $(function(){
                 $('.tickets').hide();
                 $('.messages').show();
             }
-        });
+        }).fail(function(data){
+                show_field_error($form, data);
+            });
         return false;
     });
 });

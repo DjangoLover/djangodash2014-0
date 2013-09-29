@@ -1,4 +1,4 @@
-<script src="{{ STATIC_URL }}clients_support/scripts.js"></script>
+{% load i18n %}<script src="{{ STATIC_URL }}clients_support/scripts.js"></script>
 
 <a href="#" class="dcs-plate rotate_ccw">
     <span class="dcs-plate_counter rotate_cw">3</span>
@@ -10,91 +10,54 @@
 <div class="dcs-overlay"></div>
 <div class="dcs-form tickets">
     <div class="dcs-search">
-        <a href="#" class="dcs-button dcs-search_button">Add Ticket</a>
+        <a href="#" class="dcs-button dcs-search_button">{% trans 'Add Ticket' %}</a>
         <div class="dcs-search_wrap">
-            <input type="search" class="dcs-input dcs-search_input" placeholder="Search...">
+            <input type="search" class="dcs-input dcs-search_input" placeholder="{% trans 'Search...' %}">
         </div>
     </div>
 
     <div class="dcs-addticket" style="display: none;">
         <form class="" action="#" method="post" id="addticket-form">
             <div class="dcs-form_line dcs-addticket_name" style="display: none;">
-                <input type="text" class="dcs-input" placeholder="Name">
+                <div class="field-error alert-warning hide" data-name="guest_name"></div>
+                <input type="text" class="dcs-input" placeholder="{% trans 'Name' %}">
             </div><div class="dcs-form_line dcs-addticket_email" style="display: none;">
-                <input type="email" class="dcs-input" placeholder="Email">
+                <div class="field-error alert-warning hide" data-name="guest_email"></div>
+                <input type="email" class="dcs-input" placeholder="{% trans 'Email' %}">
             </div>
             <div class="dcs-form_line">
+                <div class="field-error alert-warning hide" data-name="type"></div>
                 <select class="dcs-select" id="addticket-topic">
-                    <option>Choose topic...</option>
+                    {% comment %}<option>Choose topic...</option>
                     <option>Technical Support</option>
                     <option>Complaint</option>
                     <option>Feature Suggestion</option>
-                    <option>Other</option>
+                    <option>Other</option>{% endcomment %}
                 </select>
             </div>
             <div class="dcs-form_line">
-                <input type="text" class="dcs-input dcs-addticket_email" placeholder="Title" id="addticket-title">
+                <div class="field-error alert-warning hide" data-name="subject"></div>
+                <input type="text" class="dcs-input dcs-addticket_email" placeholder="{% trans 'Title' %}" id="addticket-title">
             </div>
             <div class="dcs-form_line">
-                <textarea class="dcs-textarea" placeholder="Problem Description..." id="addticket-description"></textarea>
+                <div class="field-error alert-warning hide" data-name="text"></div>
+                <textarea class="dcs-textarea" placeholder="{% trans 'Problem Description...' %}" id="addticket-description"></textarea>
             </div>
             <div class="dcs-form_line dcs-addticket_button">
-                <button class="dcs-button">Send</button>
+                <button class="dcs-button">{% trans 'Send' %}</button>
             </div>
         </form>
     </div>
 
     <span class="tickets-list">
-    <h2 class="dcs-title">your tickets</h2>
+    <h2 class="dcs-title">{% trans 'your tickets' %}</h2>
     <dl class="dcs-tickets your-tickets">
-        <dt class="dcs-tickets_item dcs-tickets_item__active">
-            <span class="dcs-tickets_title">When my support request will be reviewed?</span>
-        </dt>
-        <dd class="dcs-tickets_description">
-            <ul class="dcs-tickets_history">
-                <li class="dcs-tickets_reply">
-                    <p>The first part of the epilogue begins with the wedding of Pierre and Natasha in 1813. It is the last happy event for the Rostov family, which is undergoing a transition. Count Rostov dies soon after, leaving his eldest son Nikolai to take charge of the debt-ridden estate.</p>
-                    <p class="dcs-tickets_author dcs-tickets_author__self">You, 5 hours ago</p>
-                <li class="dcs-tickets_reply">
-                    <p>The second part of the epilogue contains Tolstoy's critique of all existing forms of mainstream history. The 19th century Great Man Theory claims that historical events are the result of the actions of "heroes" and other great individuals, Tolstoy argues that this is impossible because of how rarely these actions result in great historical events.</p><p>Rather, he argues, great historical events are the result of many smaller events driven by the thousands of individuals involved, (he compares this to Calculus, and the sum of infinitesimals). He then goes on to argue that these smaller events are the result of an inverse relationship between necessity and free-will, necessity being based on reason and therefore explainable by historical analysis, and free-will being based on "consciousness" and therefore inherently unpredictable.</p>
-                    <p class="dcs-tickets_author">Jim Morris, 4 hours ago</p>
-                <li class="dcs-tickets_status dcs-tickets_status__close">
-                    solved
-                <li class="dcs-tickets_status dcs-tickets_status__open">
-                    reopened
-                <li class="dcs-tickets_reply">
-                    <p>Nikolai finds himself with the task of maintaining the family on the verge of bankruptcy. His abhorrence at the idea of marrying for wealth almost gets in his way, but finally he marries the now-rich Maria Bolkonskaya and in so doing also saves his family from financial ruin.</p>
-                    <p class="dcs-tickets_author dcs-tickets_author__self">You, 1 hour ago</p>
-                <li class="dcs-tickets_status">
-                    closed
-            </ul>
-        </dd>
 
-        <dt class="dcs-tickets_item">
-            <span class="dcs-tickets_title">Cant' use Print function on my iPhone with network printer.</span>
-        </dt>
-        <dd class="dcs-tickets_description">
-            asdq
-        </dd>
     </dl>
 
     <h2 class="dcs-title">other tickets</h2>
     <dl class="dcs-tickets other-tickets">
-        <dt class="dcs-tickets_item">
-            <span class="dcs-tickets_author">by Boris Shmoris</span>
-            <span class="dcs-tickets_title">Every website has this feature! I thought you'll do that.</span>
-        </dt>
-        <dd class="dcs-tickets_description">
-            asdqrq
-        </dd>
 
-        <dt class="dcs-tickets_item">
-            <span class="dcs-tickets_author">by Milla Kunis</span>
-            <span class="dcs-tickets_title">Don't understand how you can ignore the obvious. Your application needs urgent update!!!1</span>
-        </dt>
-        <dd class="dcs-tickets_description">
-            asdad
-        </dd>
     </dl>
     </span>
     
@@ -102,7 +65,7 @@
 </div>
 
 <div class="dcs-form messages">
-    <h2 class="dcs-title">MESSAGE WAS SENDED</h2>
+    <h2 class="dcs-title">{% trans 'MESSAGE WAS SENDED' %}</h2>
 </div>
 
 </div>
@@ -110,17 +73,18 @@
 <script type="text/template" id="add-message-form"><li class="dcs-tickets_addreply">
     <form method="post">
     <div class="dcs-form_line">
-        <textarea name="text" class="dcs-textarea" placeholder="Your Message..."></textarea>
+        <div class="field-error alert-warning hide" data-name="text"></div>
+        <textarea name="text" class="dcs-textarea" placeholder="{% trans 'Your Message...' %}"></textarea>
     </div>
     <div class="dcs-form_line">
         <div class="dcs-satisfied">
-            <span class="dcs-satisfied_question">Are you satisfied?</span>
-            <label class="dcs-satisfied_label"><input type="radio" class="dcs-satisfied_input" name="satisfied">Yes</label>
-            <label class="dcs-satisfied_label"><input type="radio" class="dcs-satisfied_input" name="satisfied">No</label>
+            <span class="dcs-satisfied_question">{% trans 'Are you satisfied?' %}</span>
+            <label class="dcs-satisfied_label"><input type="radio" class="dcs-satisfied_input" name="satisfied">{% trans 'Yes' %}</label>
+            <label class="dcs-satisfied_label"><input type="radio" class="dcs-satisfied_input" name="satisfied">{% trans 'No' %}</label>
         </div>
     </div>
     <div class="dcs-form_line dcs-addreply_button">
-        <button class="dcs-button">Reply</button>
+        <button class="dcs-button">{% trans 'Reply' %}</button>
     </div>
     </form>
 </li>

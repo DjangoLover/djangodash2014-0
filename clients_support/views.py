@@ -15,7 +15,7 @@ class UnsafeSessionAuthentication(SessionAuthentication):
         if not user or not user.is_active:
            return None
 
-        return (user, None)
+        return user, None
 
 
 class TicketPermissions(permissions.BasePermission):
