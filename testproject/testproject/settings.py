@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     # Custom
     'auth',
     'index',
+    'autocomplete_light',
     'clients_support',
 )
 

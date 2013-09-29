@@ -19,4 +19,7 @@ router.register(r'messages', MessageViewSet)
 
 
 def clients_support_urls():
-    return (url('^clients_support/', include(router.urls)), )
+    return (
+        url(r'^autocomplete/', include('autocomplete_light.urls')),
+        url('^clients_support/', include(router.urls)),
+    )

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -17,6 +18,13 @@ class Tag(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_update_url(self):
+        url = 'admin:default_template_autocomplete_templatedchoice_change'
+        return reverse(url, args=(self.pk,))
+
+    def get_absolute_url(self):
+        return reverse('templated_choice_detail', args=(self.pk,))
 
 
 class Ticket(models.Model):
@@ -79,6 +87,7 @@ class Ticket(models.Model):
     created_time = models.DateTimeField(_('Created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('Last updated time'), auto_now=True)
     closed_time = models.DateTimeField(_('Closed time'), blank=True, null=True)
+
 
     def __unicode__(self):
         return u'#%d. %s' % (self.pk, self.subject)

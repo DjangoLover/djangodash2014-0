@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import autocomplete_light
 from django import forms
 from django.contrib import admin, messages
 from django.utils.translation import ugettext as _
 from clients_support.conf import settings
 
-from clients_support.models import Ticket, TicketType, StatusLog
+from clients_support.models import Ticket, TicketType, StatusLog, Tag
 
 
 class AssignManagerFilter(admin.SimpleListFilter):
@@ -36,13 +37,17 @@ class TicketForm(forms.ModelForm):
 
 class TicketAdmin(admin.ModelAdmin):
 
-    form = TicketForm
+    # form = TicketForm
+    form = autocomplete_light.modelform_factory(Ticket, form=TicketForm)
+
 
     list_display = ('subject', 'user', 'manager', 'status', 'type', 'importance', 'updated_time')
     list_filter = ('tags', 'type', 'importance', 'status', 'created_time', AssignManagerFilter)
     search_fields = ('subject', 'text')
     actions = ['make_published', 'change_importance_to_high', 'change_importance_to_normal', 'change_importance_to_low',
                'change_status_to_read', 'change_status_to_closed']
+
+    change_form_template = 'clients_support/admin/change_ticket.html'
     change_list_template = 'clients_support/admin/change_list.html'
     readonly_fields = ('created_time', 'closed_time')
 
@@ -115,6 +120,7 @@ class StatusLogAdmin(admin.ModelAdmin):
         return False
 
 
+admin.site.register(Tag)
 admin.site.register(Ticket, TicketAdmin)
 admin.site.register(StatusLog, StatusLogAdmin)
 admin.site.register(TicketType)
