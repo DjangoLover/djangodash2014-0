@@ -71,19 +71,21 @@ class TicketAdmin(admin.ModelAdmin):
     change_importance_to_low.short_description = _("Change the importance of the selected tickets on a low")
 
     def change_status_to_read(self, request, queryset):
-        if queryset.update(status=Ticket.READ_STATUS):
-            for ticket in queryset:
-                if ticket.status != ticket.READ_STATUS:
-                    StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
+        for ticket in queryset:
+            if ticket.status == Ticket.NEW_STATUS:
+                StatusLog.add_log(ticket, request.user, ticket.READ_STATUS)
+        queryset.filter(status=Ticket.NEW_STATUS).update(status=Ticket.READ_STATUS)
+
     change_status_to_read.short_description = _("Change the status of the selected tickets as read")
 
     def change_status_to_closed(self, request, queryset):
-        allow_closed_statuses = [Ticket.CLOSED_STATUS, Ticket.SOLVED_STATUS, Ticket.REOPENED_STATUS]
-        if queryset.exclude(status__in=allow_closed_statuses).update(
-                status=Ticket.CLOSED_STATUS, closed_time=datetime.now()):
-            for ticket in queryset:
-                if not ticket.status in allow_closed_statuses:
-                    StatusLog.add_log(ticket, request.user, ticket.CLOSED_STATUS)
+        deny_statuses = [Ticket.CLOSED_STATUS, Ticket.SOLVED_STATUS, Ticket.REOPENED_STATUS]
+        for ticket in queryset:
+            if not ticket.status in deny_statuses:
+                StatusLog.add_log(ticket, request.user, ticket.CLOSED_STATUS)
+        queryset.exclude(status__in=deny_statuses).\
+            update(status=Ticket.CLOSED_STATUS, closed_time=datetime.now())
+
     change_status_to_closed.short_description = _("Change the status of the selected tickets as closed")
 
 
