@@ -149,11 +149,8 @@ class StatusLog(models.Model):
 
     @staticmethod
     def add_log(ticket, user, status):
-        try:
-            status_log = StatusLog.objects.get(ticket=ticket)
-        except StatusLog.DoesNotExist:
-            status_log = StatusLog()
-            status_log.ticket = ticket
+        status_log = StatusLog()
+        status_log.ticket = ticket
         status_log.user = user
         status_log.status = status
         status_log.save()
